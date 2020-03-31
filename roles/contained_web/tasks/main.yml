@@ -1,0 +1,27 @@
+---
+# tasks file for contained_web
+
+- name: Create/Ensure website content directory
+  file:
+    path: /root/site_content
+    state: directory
+  
+- name: Create/Ensure index file
+  file:
+    path: /root/site_content/index.html
+    state: touch
+
+- name: Add server name to index.html
+  copy:
+    content: '<h1>{{ inventory_hostname }}</h1>'
+    dest: /root/site_content/index.html
+
+- name: Run a web container from the web image
+  docker_container:
+    image: "{{ docker_registry }}{{ image_name }}"
+    name: web_container
+    state: started
+    ports:
+     - "8000:80"
+    volumes:
+     - "/root/site_content/:/usr/share/nginx/html/"

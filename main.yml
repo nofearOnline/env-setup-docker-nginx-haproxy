@@ -1,0 +1,18 @@
+---
+
+- hosts: current_servers
+
+  roles:
+    - setup
+
+- hosts: lb
+  gather_facts: no
+
+  roles:
+    - contained_lb
+
+- hosts: web
+  gather_facts: no
+
+  roles:
+    - contained_web

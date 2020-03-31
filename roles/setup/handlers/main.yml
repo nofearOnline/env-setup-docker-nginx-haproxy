@@ -1,0 +1,9 @@
+---
+# handlers file for setup
+
+- name: docker restart
+  service:
+    name: docker
+    enabled: yes
+    state: restarted
+ 

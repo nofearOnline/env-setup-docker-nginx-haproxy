@@ -1,0 +1,44 @@
+---
+# tasks file for setup
+
+- name: Install yum utils
+  yum:
+    name:
+      - yum-utils
+      - device-mapper-persistent-data
+      - lvm2
+    state: present
+
+- name: Add the yum {{ item.name }} reposetory if needed
+  yum_repository:
+    name: "{{ item.name }}"
+    baseurl: "{{ item.base_url }}"
+    description: "{{ item.description }}"
+    state: present
+  loop: "{{ repo_list }}"
+
+- name: Ensure a list of docker packages installed
+  yum:
+    name:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+    state: installed
+
+- name: Add my inscure docker registry
+  copy:
+    src: /etc/docker/daemon.json
+    dest: /etc/docker/daemon.json
+    force: no
+  notify:
+    - docker restart
+
+- name: Install pip for docker-py
+  yum:
+    name: python-pip
+    state: present
+
+- name: Install docker-py for docker modules
+  pip:
+    name: docker-py
+    state: present

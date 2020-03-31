@@ -1,0 +1,4 @@
+---
+# vars file for contained_lb
+
+lb_cfg_file_path: "/root/lb_config/haproxy.cfg"

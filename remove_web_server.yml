@@ -1,0 +1,27 @@
+---
+
+- hosts: remove_web 
+
+  tasks:
+
+  - name: Remove this web instance from the load balancer
+    lineinfile:
+      path: /root/lb_config/haproxy.cfg
+      state: absent
+      regexp: .*{{ inventory_hostname }}.*
+    notify:
+      - restart lbs configurations
+    delegate_to: "{{ item }}"
+    loop: "{{ groups['lb'] }}"
+
+  - name: Delete the web container
+    docker_container:
+      name: web_container
+      state: absent
+
+  handlers:
+
+  - name: restart lbs configurations
+    shell: docker kill --signal=HUP lb_container
+    delegate_to: "{{ item }}"
+    loop: "{{ groups['lb'] }}"

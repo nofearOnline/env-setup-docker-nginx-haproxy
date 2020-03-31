@@ -1,0 +1,25 @@
+# all of those are examples to a setup of 5 centos mechines
+
+[all:vars]
+docker_registry=192.168.81.129:5000/ 
+
+[current_servers:children]
+web
+lb
+
+[web]
+centos3
+centos4
+centos5
+
+[web:vars]
+image_name=my-new-web-image 
+
+[lb]
+centos2
+
+[lb:vars]
+image_name=my-lb-image
+
+[remove_web]
+centos5

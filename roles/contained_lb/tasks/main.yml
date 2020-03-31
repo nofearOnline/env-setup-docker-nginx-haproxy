@@ -1,0 +1,23 @@
+---
+# tasks file for contained_lb
+
+- name: Create/Ensure haproxy configuration directory
+  file:
+    path: /root/lb_config
+    state: directory
+
+- name: Add the lb configuration file with the current web servers
+  template:
+    src: haproxy.cfg
+    dest: "{{ lb_cfg_file_path }}"
+
+- name: Run a lb container from the lb image
+  docker_container:
+    image: "{{ docker_registry }}{{ image_name }}"
+    name: lb_container
+    state: started
+    restart: yes
+    ports:
+     - "80:80"
+    volumes:
+     - "{{ lb_cfg_file_path }}:/usr/local/etc/haproxy/haproxy.cfg"

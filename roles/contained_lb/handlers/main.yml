@@ -1,0 +1,13 @@
+---
+# handlers file for contained_lb
+
+- name: restart lbs containers
+  docker_container:
+    image: 192.168.81.129:5000/my-lb-image
+    name: lb_container
+    state: started
+    restart: yes
+    ports:
+     - "80:80"
+    volumes:
+     - "{{ lb_cfg_file_path }}:/usr/local/etc/haproxy/haproxy.cfg"

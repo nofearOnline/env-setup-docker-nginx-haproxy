@@ -1,0 +1,27 @@
+---
+
+- hosts: web
+  gather_facts: no
+
+  tasks:
+
+  - name: Pull the new web image
+    docker_image:
+      name: "{{ docker_registry }}{{ image_name }}"
+      source: pull 
+
+  - name: Remove current old web service
+    docker_container:
+      name: web_container
+      force_kill: yes
+      state: absent
+
+  - name: Start the new updated web image
+    docker_container:
+      image: "{{ docker_registry }}{{ image_name }}"
+      name: web_container
+      state: started
+      ports:
+       - "8000:80"
+      volumes:
+       - "/root/site_content/:/usr/share/nginx/html/"
